@@ -42,3 +42,7 @@ enabled = false
 plan = 12
 ; minimum block age (in days) for scrubbing. Only used with percentage plans
 older-than = 10
+
+[smart]
+; set to true to run smart after sync and scrub
+enabled = false

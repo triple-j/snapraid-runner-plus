@@ -55,10 +55,16 @@ def snapraid_command(command, args={}, *, allow_statuscodes=[]):
         errors="replace",
     )
     out = []
-    threads = [
-        tee_log(p.stdout, out, logging.OUTPUT),
-        tee_log(p.stderr, [], logging.OUTERR),
-    ]
+    if command == "smart":
+        threads = [
+            tee_log(p.stdout, out, logging.SMART),
+            tee_log(p.stderr, [], logging.OUTERR),
+        ]
+    else:
+        threads = [
+            tee_log(p.stdout, out, logging.OUTPUT),
+            tee_log(p.stderr, [], logging.OUTERR),
+        ]
     for t in threads:
         t.join()
     ret = p.wait()
@@ -136,7 +142,7 @@ def load_config(args):
     global config
     parser = configparser.RawConfigParser()
     parser.read(args.conf)
-    sections = ["snapraid", "logging", "email", "smtp", "scrub"]
+    sections = ["snapraid", "logging", "email", "smtp", "scrub", "smart"]
     config = dict((x, defaultdict(lambda: "")) for x in sections)
     for section in parser.sections():
         for k, v in parser.items(section):
@@ -157,6 +163,7 @@ def load_config(args):
     config["smtp"]["ssl"] = config["smtp"]["ssl"].lower() == "true"
     config["smtp"]["tls"] = config["smtp"]["tls"].lower() == "true"
     config["scrub"]["enabled"] = config["scrub"]["enabled"].lower() == "true"
+    config["smart"]["enabled"] = config["smart"]["enabled"].lower() == "true"
     config["email"]["short"] = config["email"]["short"].lower() == "true"
     config["snapraid"]["touch"] = config["snapraid"]["touch"].lower() == "true"
 
@@ -178,6 +185,8 @@ def setup_logger():
     logging.addLevelName(logging.OUTPUT, "OUTPUT")
     logging.OUTERR = 25
     logging.addLevelName(logging.OUTERR, "OUTERR")
+    logging.SMART = 26
+    logging.addLevelName(logging.SMART, "SMART")
     root_logger.setLevel(logging.OUTPUT)
     console_logger = logging.StreamHandler(sys.stdout)
     console_logger.setFormatter(log_format)
@@ -204,7 +213,7 @@ def setup_logger():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--version', action='version', version='%(prog)s ' + VERSION)
+    parser.add_argument("--version", action="version", version="%(prog)s " + VERSION)
     parser.add_argument(
         "-c",
         "--conf",
@@ -332,6 +341,15 @@ def run():
             }
         try:
             snapraid_command("scrub", scrub_args)
+        except subprocess.CalledProcessError as e:
+            logging.error(e)
+            finish(False)
+        logging.info("*" * 60)
+
+    if config["smart"]["enabled"]:
+        logging.info("Running SMART...")
+        try:
+            snapraid_command("smart")
         except subprocess.CalledProcessError as e:
             logging.error(e)
             finish(False)
