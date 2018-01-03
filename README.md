@@ -21,6 +21,16 @@ It supports Windows, Linux and macOS and requires at least python3.7.
     has details on how to use gmail for sending mail.
 * Run the script via `python3 snapraid-runner.py` on Linux or
  `py -3 snapraid-runner.py` on Windows.
+* If you want to enable SMART monitoring on Windows or Mac OS, you must first
+  download and install [smartmontools](https://www.smartmontools.org/wiki/Download).
+  Most Linux distributions will have smartmontools installed by default.
+  * Windows users may install using the packaged .exe installer found at this link or
+    use [Chocolatey](https://chocolatey.org/) (i.e., `choco install smartmontools`).
+  * Mac OS users may install using the packaged .dmg installer found at this link or
+    use [Homebrew](https://brew.sh/) (i.e., `brew install smartmontools`).
+  * Linux users may check for smartmontools using `smartctl -V`, if not installed use
+    your distribution's package manager to install `smartmontools`
+    (e.g., `apt-get install smartmontools`, `yum install smartmontools`, etc.)
 
 ## Features
 
