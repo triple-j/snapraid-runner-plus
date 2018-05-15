@@ -20,16 +20,6 @@ It supports Windows, Linux and macOS and requires at least python3.7.
     has details on how to use gmail for sending mail.
 * Run the script via `python3 snapraid-runner.py` on Linux or
  `py -3 snapraid-runner.py` on Windows.
-* If you want to enable SMART monitoring on Windows or Mac OS, you must first
-  download and install [smartmontools](https://www.smartmontools.org/wiki/Download).
-  Most Linux distributions will have smartmontools installed by default.
-  * Windows users may install using the packaged .exe installer found at this link or
-    use [Chocolatey](https://chocolatey.org/) (i.e., `choco install smartmontools`).
-  * Mac OS users may install using the packaged .dmg installer found at this link or
-    use [Homebrew](https://brew.sh/) (i.e., `brew install smartmontools`).
-  * Linux users may check for smartmontools using `smartctl -V`, if not installed use
-    your distribution's package manager to install `smartmontools`
-    (e.g., `apt-get install smartmontools`, `yum install smartmontools`, etc.)
 
 ## Features
 * Runs `diff` before `sync` to see how many files were deleted and aborts if
@@ -37,6 +27,15 @@ It supports Windows, Linux and macOS and requires at least python3.7.
 * Can create a size-limited rotated logfile.
 * Can send notification emails after each run or only for failures.
 * Can run `scrub` after `sync`
+* Can run `smart`. For this to work, you need [smartmontools](https://www.smartmontools.org/wiki/Download).
+  Most Linux distributions will have it installed installed by default.
+  * Windows users may install using the packaged .exe installer found at this link or
+    use [Chocolatey](https://chocolatey.org/) (i.e., `choco install smartmontools`).
+  * Mac OS users may install using the packaged .dmg installer found at this link or
+    use [Homebrew](https://brew.sh/) (i.e., `brew install smartmontools`).
+  * Linux users may check for smartmontools using `smartctl -V`, if not installed use
+    your distribution's package manager to install `smartmontools`
+    (e.g., `apt-get install smartmontools`, `yum install smartmontools`, etc.)
 
 ## Scope of this project and contributions
 Snapraid-runner is supposed to be a small tool with clear focus. It should not
@@ -54,6 +53,7 @@ feature you are missing, you can have a look
 * Add support for scrub --plan, replacing --percentage (thanks to fmoledina)
 * Remove snapraid progress output. Was accidentially introduced with python3
   support.
+* Add support for running `snapraid smart` (by k3vmcd, PR-15)
 
 ### v0.5 (26 Feb 2021)
 * Remove (broken) python2 support
