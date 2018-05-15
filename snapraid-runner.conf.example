@@ -5,8 +5,10 @@ executable = snapraid
 config = snapraid.conf
 ; abort operation if there are more deletes than this, set to -1 to disable
 deletethreshold = 40
-; if you want touch to be ran each time
+; set to true to run touch each time
 touch = false
+; set to true to run smart. Make sure smartctl is in your PATH
+smart = false
 
 [logging]
 ; logfile to write to, leave empty to disable
@@ -42,8 +44,3 @@ enabled = false
 plan = 12
 ; minimum block age (in days) for scrubbing. Only used with percentage plans
 older-than = 10
-
-[smart]
-; Mac OS & Windows users must manually install smartmontools before enabling!
-; set to true to run smart after sync and scrub
-enabled = false

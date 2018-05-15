@@ -21,16 +21,6 @@ It supports Windows, Linux and macOS and requires at least python3.7.
     has details on how to use gmail for sending mail.
 * Run the script via `python3 snapraid-runner.py` on Linux or
  `py -3 snapraid-runner.py` on Windows.
-* If you want to enable SMART monitoring on Windows or Mac OS, you must first
-  download and install [smartmontools](https://www.smartmontools.org/wiki/Download).
-  Most Linux distributions will have smartmontools installed by default.
-  * Windows users may install using the packaged .exe installer found at this link or
-    use [Chocolatey](https://chocolatey.org/) (i.e., `choco install smartmontools`).
-  * Mac OS users may install using the packaged .dmg installer found at this link or
-    use [Homebrew](https://brew.sh/) (i.e., `brew install smartmontools`).
-  * Linux users may check for smartmontools using `smartctl -V`, if not installed use
-    your distribution's package manager to install `smartmontools`
-    (e.g., `apt-get install smartmontools`, `yum install smartmontools`, etc.)
 
 ## Features
 
@@ -39,6 +29,15 @@ It supports Windows, Linux and macOS and requires at least python3.7.
 * Can create a size-limited rotated logfile.
 * Can send notification emails after each run or only for failures.
 * Can run `scrub` after `sync`
+* Can run `smart`. For this to work, you need [smartmontools](https://www.smartmontools.org/wiki/Download).
+  Most Linux distributions will have it installed installed by default.
+  * Windows users may install using the packaged .exe installer found at this link or
+    use [Chocolatey](https://chocolatey.org/) (i.e., `choco install smartmontools`).
+  * Mac OS users may install using the packaged .dmg installer found at this link or
+    use [Homebrew](https://brew.sh/) (i.e., `brew install smartmontools`).
+  * Linux users may check for smartmontools using `smartctl -V`, if not installed use
+    your distribution's package manager to install `smartmontools`
+    (e.g., `apt-get install smartmontools`, `yum install smartmontools`, etc.)
 
 ## Scope of this project and contributions
 
@@ -56,8 +55,10 @@ feature you are missing, you can have a look
 ### [v1.0] - (Unreleased)
 
 * Track the version number in code.
+* Add support for running `snapraid smart` (by k3vmcd, [#15])
 
 [v1.0]: https://github.com/triple-j/snapraid-runner-plus/compare/v0.6-rc1...v1.0
+[#15]: https://github.com/Chronial/snapraid-runner/pull/15
 
 ### [v0.6-rc1] - 2021-10-31 (last `snapraid-runner` release)
 
