@@ -56,6 +56,7 @@ feature you are missing, you can have a look
 
 * Track the version number in code.
 * Add support for running `snapraid smart` (by k3vmcd, [#15])
+* Add support for `sync --pre-hash`
 
 [v1.0]: https://github.com/triple-j/snapraid-runner-plus/compare/v0.6-rc1...v1.0
 [#15]: https://github.com/Chronial/snapraid-runner/pull/15
@@ -63,7 +64,7 @@ feature you are missing, you can have a look
 ### [v0.6-rc1] - 2021-10-31 (last `snapraid-runner` release)
 
 * Add `--ignore-deletethreshold` (by exterrestris, [#25])
-* Add support for scrub `--plan`, replacing `--percentage` (thanks to fmoledina)
+* Add support for `scrub --plan`, replacing `--percentage` (thanks to fmoledina)
 * Remove snapraid progress output. Was accidentially introduced with python3
   support.
 

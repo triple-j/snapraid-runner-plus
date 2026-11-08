@@ -44,7 +44,9 @@ def snapraid_command(command, args={}, *, allow_statuscodes=[], stdout_log_level
     """
     arguments = ["--conf", config["snapraid"]["config"], "--quiet"]
     for k, v in args.items():
-        arguments.extend(["--" + k, str(v)])
+        arguments.append("--" + k)
+        if v != None:
+            arguments.append(str(v))
     p = subprocess.Popen(
         [config["snapraid"]["executable"], command] + arguments,
         stdout=subprocess.PIPE,
@@ -136,7 +138,7 @@ def load_config(args):
     global config
     parser = configparser.RawConfigParser()
     parser.read(args.conf)
-    sections = ["snapraid", "logging", "email", "smtp", "scrub", "smart"]
+    sections = ["snapraid", "logging", "email", "smtp", "scrub", "smart", "sync"]
     config = dict((x, defaultdict(lambda: "")) for x in sections)
     for section in parser.sections():
         for k, v in parser.items(section):
@@ -160,6 +162,7 @@ def load_config(args):
     config["email"]["short"] = config["email"]["short"].lower() == "true"
     config["snapraid"]["touch"] = config["snapraid"]["touch"].lower() == "true"
     config["snapraid"]["smart"] = config["snapraid"]["smart"].lower() == "true"
+    config["sync"]["pre-hash"] = config["sync"]["pre-hash"].lower() == "true"
 
     # Migration
     if config["scrub"]["percentage"]:
@@ -315,8 +318,11 @@ def run():
         logging.info("No changes detected, no sync required")
     else:
         logging.info("Running sync...")
+        sync_args = {}
+        if config["sync"]["pre-hash"]:
+            sync_args["pre-hash"] = None
         try:
-            snapraid_command("sync")
+            snapraid_command("sync", sync_args)
         except subprocess.CalledProcessError as e:
             logging.error(e)
             finish(False)
