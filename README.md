@@ -44,6 +44,7 @@ feature you are missing, you can have a look
 * Add support for scrub --plan, replacing --percentage (thanks to fmoledina)
 * Remove snapraid progress output. Was accidentially introduced with python3
   support.
+* Add support for sync --pre-hash (by triple-j)
 
 ### v0.5 (26 Feb 2021)
 * Remove (broken) python2 support
