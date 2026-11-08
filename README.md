@@ -57,6 +57,8 @@ feature you are missing, you can have a look
 * Track the version number in code.
 * Add support for running `snapraid smart` (by k3vmcd, [#15])
 * Add support for `sync --pre-hash`
+* Add `--test-email` to send a test email to confirm the configuration is
+  correct
 
 [v1.0]: https://github.com/triple-j/snapraid-runner-plus/compare/v0.6-rc1...v1.0
 [#15]: https://github.com/Chronial/snapraid-runner/pull/15

@@ -235,6 +235,11 @@ def main():
         action="store_true",
         help="Sync even if configured delete threshold is exceeded",
     )
+    parser.add_argument(
+        "--test-email",
+        action="store_true",
+        help="Send a test email to confirm the configuration is correct",
+    )
     args = parser.parse_args()
 
     if not os.path.exists(args.conf):
@@ -255,6 +260,29 @@ def main():
         print("unexpected exception while setting up logging")
         print(traceback.format_exc())
         sys.exit(2)
+
+    if args.test_email:
+        logging.info("=" * 60)
+        logging.info("Sending test email")
+        logging.info("=" * 60)
+
+        email_options = [
+            ("email", "from"),
+            ("email", "to"),
+            ("smtp", "host"),
+            ("smtp", "port"),
+            ("smtp", "ssl"),
+            ("smtp", "tls"),
+            ("smtp", "user"),
+        ]
+        for section, option in email_options:
+            logging.info("{}.{} ='{}'".format(section, option, config[section][option]))
+
+        try:
+            send_email(True)
+        except Exception:
+            logging.exception("Failed to send email")
+        sys.exit(0)
 
     try:
         run()
