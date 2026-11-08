@@ -1,4 +1,4 @@
-# Snapraid Runner Script
+# Snapraid Runner Script Plus
 
 This script runs snapraid and sends its output to the console, a log file and
 via email. All this is configurable.
@@ -43,7 +43,13 @@ feature you are missing, you can have a look
 
 ## Changelog
 
-### [v0.6-rc1] - 2021-10-31
+### [v1.0] - (Unreleased)
+
+* Track the version number in code.
+
+[v1.0]: https://github.com/triple-j/snapraid-runner-plus/compare/v0.6-rc1...v1.0
+
+### [v0.6-rc1] - 2021-10-31 (last `snapraid-runner` release)
 
 * Add `--ignore-deletethreshold` (by exterrestris, [#25])
 * Add support for scrub `--plan`, replacing `--percentage` (thanks to fmoledina)

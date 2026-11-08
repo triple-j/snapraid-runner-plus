@@ -12,6 +12,8 @@ import traceback
 from collections import Counter, defaultdict
 from io import StringIO
 
+VERSION = "1.0"
+
 # Global variables
 config = None
 email_log = None
@@ -202,6 +204,7 @@ def setup_logger():
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--version', action='version', version='%(prog)s ' + VERSION)
     parser.add_argument(
         "-c",
         "--conf",
