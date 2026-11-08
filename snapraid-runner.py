@@ -156,13 +156,17 @@ def load_config(args):
         except ValueError:
             config[section][option] = 0
 
-    config["smtp"]["ssl"] = config["smtp"]["ssl"].lower() == "true"
-    config["smtp"]["tls"] = config["smtp"]["tls"].lower() == "true"
-    config["scrub"]["enabled"] = config["scrub"]["enabled"].lower() == "true"
-    config["email"]["short"] = config["email"]["short"].lower() == "true"
-    config["snapraid"]["touch"] = config["snapraid"]["touch"].lower() == "true"
-    config["snapraid"]["smart"] = config["snapraid"]["smart"].lower() == "true"
-    config["sync"]["pre-hash"] = config["sync"]["pre-hash"].lower() == "true"
+    bool_options = [
+        ("smtp", "ssl"),
+        ("smtp", "tls"),
+        ("scrub", "enabled"),
+        ("email", "short"),
+        ("snapraid", "touch"),
+        ("snapraid", "smart"),
+        ("sync", "pre-hash"),
+    ]
+    for section, option in bool_options:
+        config[section][option] = config[section][option].lower() == "true"
 
     # Migration
     if config["scrub"]["percentage"]:
