@@ -9,6 +9,7 @@ scheduler.
 It supports Windows, Linux and macOS and requires at least python3.7.
 
 ## How to use
+
 * If you don’t already have it, download and install
   [the latest python version](https://www.python.org/downloads/).
 * Download [the latest release](https://github.com/Chronial/snapraid-runner/releases)
@@ -22,6 +23,7 @@ It supports Windows, Linux and macOS and requires at least python3.7.
  `py -3 snapraid-runner.py` on Windows.
 
 ## Features
+
 * Runs `diff` before `sync` to see how many files were deleted and aborts if
   that number exceeds a set threshold.
 * Can create a size-limited rotated logfile.
@@ -29,6 +31,7 @@ It supports Windows, Linux and macOS and requires at least python3.7.
 * Can run `scrub` after `sync`
 
 ## Scope of this project and contributions
+
 Snapraid-runner is supposed to be a small tool with clear focus. It should not
 have any dependencies to keep installation trivial. I always welcome bugfixes
 and contributions, but be aware that I will not merge new features that I feel
@@ -39,28 +42,50 @@ feature you are missing, you can have a look
 [at the open PRs](https://github.com/Chronial/snapraid-runner/pulls).
 
 ## Changelog
-### Unreleased
-* Add --ignore-deletethreshold (by exterrestris, #25)
-* Add support for scrub --plan, replacing --percentage (thanks to fmoledina)
+
+### [v0.6-rc1] - 2021-10-31
+
+* Add `--ignore-deletethreshold` (by exterrestris, [#25])
+* Add support for scrub `--plan`, replacing `--percentage` (thanks to fmoledina)
 * Remove snapraid progress output. Was accidentially introduced with python3
   support.
 
-### v0.5 (26 Feb 2021)
+[v0.6-rc1]: https://github.com/triple-j/snapraid-runner-plus/compare/v0.5...v0.6-rc1
+[#25]: https://github.com/Chronial/snapraid-runner/pull/25
+
+### [v0.5] - 2020-11-17
+
 * Remove (broken) python2 support
-* Fix snapraid output encoding handling (by hyyz17200, #31)
+* Fix snapraid output encoding handling (by hyyz17200, [#31])
 * Fix log rotation (by ptoulouse, #36)
 
-### v0.4 (17 Aug 2019)
+[v0.5]: https://github.com/triple-j/snapraid-runner-plus/compare/v0.4...v0.5
+[#31]: https://github.com/Chronial/snapraid-runner/pull/31
+
+### [v0.4] - 2019-08-16
+
 * Add compatibility with python3 (by reed-jones)
-* Add support for running `snapraid touch` (by ShoGinn, #11)
+* Add support for running `snapraid touch` (by ShoGinn, [#11])
 * Add SMTP TLS support
 
-### v0.3 (20 Jul 2017)
+[v0.4]: https://github.com/triple-j/snapraid-runner-plus/compare/v0.3...v0.4
+[#11]: https://github.com/Chronial/snapraid-runner/pull/11
+
+### [v0.3] - 2017-07-20
+
 * Limit size of sent emails
 
-### v0.2 (27 Apr 2015)
+[v0.3]: https://github.com/triple-j/snapraid-runner-plus/compare/v0.2...v0.3
+
+### [v0.2] - 2015-04-27
+
 * Fix compatibility with Snapraid 8.0
 * Allow disabling of scrub from command line
 
-### v0.1 (16 Feb 2014)
+[v0.2]: https://github.com/triple-j/snapraid-runner-plus/compare/v0.1...v0.2
+
+### [v0.1] - 2014-02-16
+
 * Initial release
+
+[v0.1]: https://github.com/triple-j/snapraid-runner-plus/releases/tag/v0.1
