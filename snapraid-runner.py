@@ -261,6 +261,7 @@ def main():
 
 def run():
     logging.info("=" * 60)
+    logging.info("SnapRAID Runner Script Plus - Version: {}".format(VERSION))
     logging.info("Run started")
     logging.info("=" * 60)
 

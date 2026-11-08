@@ -1,4 +1,4 @@
-# Snapraid Runner Script Plus
+# SnapRAID Runner Script Plus
 
 This script runs snapraid and sends its output to the console, a log file and
 via email. All this is configurable.
