@@ -22,11 +22,13 @@ def tee_log(infile, out_lines, log_level):
     Create a thread that saves all the output on infile to out_lines and
     logs every line with log_level
     """
+
     def tee_thread():
         for line in iter(infile.readline, ""):
             logging.log(log_level, line.rstrip())
             out_lines.append(line)
         infile.close()
+
     t = threading.Thread(target=tee_thread)
     t.daemon = True
     t.start()
@@ -38,9 +40,8 @@ def snapraid_command(command, args={}, *, allow_statuscodes=[]):
     Run snapraid command
     Raises subprocess.CalledProcessError if errorlevel != 0
     """
-    arguments = ["--conf", config["snapraid"]["config"],
-                 "--quiet"]
-    for (k, v) in args.items():
+    arguments = ["--conf", config["snapraid"]["config"], "--quiet"]
+    for k, v in args.items():
         arguments.extend(["--" + k, str(v)])
     p = subprocess.Popen(
         [config["snapraid"]["executable"], command] + arguments,
@@ -49,11 +50,13 @@ def snapraid_command(command, args={}, *, allow_statuscodes=[]):
         # Snapraid always outputs utf-8 on windows. On linux, utf-8
         # also seems a sensible assumption.
         encoding="utf-8",
-        errors="replace")
+        errors="replace",
+    )
     out = []
     threads = [
         tee_log(p.stdout, out, logging.OUTPUT),
-        tee_log(p.stderr, [], logging.OUTERR)]
+        tee_log(p.stderr, [], logging.OUTERR),
+    ]
     for t in threads:
         t.join()
     ret = p.wait()
@@ -82,20 +85,21 @@ def send_email(success):
         body = "Error during SnapRAID job:\n\n\n"
 
     log = email_log.getvalue()
-    maxsize = config['email'].get('maxsize', 500) * 1024
+    maxsize = config["email"].get("maxsize", 500) * 1024
     if maxsize and len(log) > maxsize:
         cut_lines = log.count("\n", maxsize // 2, -maxsize // 2)
         log = (
-            "NOTE: Log was too big for email and was shortened\n\n" +
-            log[:maxsize // 2] +
-            "[...]\n\n\n --- LOG WAS TOO BIG - {} LINES REMOVED --\n\n\n[...]".format(
-                cut_lines) +
-            log[-maxsize // 2:])
+            "NOTE: Log was too big for email and was shortened\n\n"
+            + log[: maxsize // 2]
+            + "[...]\n\n\n --- LOG WAS TOO BIG - {} LINES REMOVED --\n\n\n[...]".format(
+                cut_lines
+            )
+            + log[-maxsize // 2 :]
+        )
     body += log
 
     msg = MIMEText(body, "plain", "utf-8")
-    msg["Subject"] = config["email"]["subject"] + \
-        (" SUCCESS" if success else " ERROR")
+    msg["Subject"] = config["email"]["subject"] + (" SUCCESS" if success else " ERROR")
     msg["From"] = config["email"]["from"]
     msg["To"] = config["email"]["to"]
     smtp = {"host": config["smtp"]["host"]}
@@ -109,10 +113,7 @@ def send_email(success):
             server.starttls()
     if config["smtp"]["user"]:
         server.login(config["smtp"]["user"], config["smtp"]["password"])
-    server.sendmail(
-        config["email"]["from"],
-        [config["email"]["to"]],
-        msg.as_string())
+    server.sendmail(config["email"]["from"], [config["email"]["to"]], msg.as_string())
     server.quit()
 
 
@@ -136,12 +137,14 @@ def load_config(args):
     sections = ["snapraid", "logging", "email", "smtp", "scrub"]
     config = dict((x, defaultdict(lambda: "")) for x in sections)
     for section in parser.sections():
-        for (k, v) in parser.items(section):
+        for k, v in parser.items(section):
             config[section][k] = v.strip()
 
     int_options = [
-        ("snapraid", "deletethreshold"), ("logging", "maxsize"),
-        ("scrub", "older-than"), ("email", "maxsize"),
+        ("snapraid", "deletethreshold"),
+        ("logging", "maxsize"),
+        ("scrub", "older-than"),
+        ("email", "maxsize"),
     ]
     for section, option in int_options:
         try:
@@ -149,11 +152,11 @@ def load_config(args):
         except ValueError:
             config[section][option] = 0
 
-    config["smtp"]["ssl"] = (config["smtp"]["ssl"].lower() == "true")
-    config["smtp"]["tls"] = (config["smtp"]["tls"].lower() == "true")
-    config["scrub"]["enabled"] = (config["scrub"]["enabled"].lower() == "true")
-    config["email"]["short"] = (config["email"]["short"].lower() == "true")
-    config["snapraid"]["touch"] = (config["snapraid"]["touch"].lower() == "true")
+    config["smtp"]["ssl"] = config["smtp"]["ssl"].lower() == "true"
+    config["smtp"]["tls"] = config["smtp"]["tls"].lower() == "true"
+    config["scrub"]["enabled"] = config["scrub"]["enabled"].lower() == "true"
+    config["email"]["short"] = config["email"]["short"].lower() == "true"
+    config["snapraid"]["touch"] = config["snapraid"]["touch"].lower() == "true"
 
     # Migration
     if config["scrub"]["percentage"]:
@@ -167,8 +170,7 @@ def load_config(args):
 
 
 def setup_logger():
-    log_format = logging.Formatter(
-        "%(asctime)s [%(levelname)-6.6s] %(message)s")
+    log_format = logging.Formatter("%(asctime)s [%(levelname)-6.6s] %(message)s")
     root_logger = logging.getLogger()
     logging.OUTPUT = 15
     logging.addLevelName(logging.OUTPUT, "OUTPUT")
@@ -182,9 +184,8 @@ def setup_logger():
     if config["logging"]["file"]:
         max_log_size = max(config["logging"]["maxsize"], 0) * 1024
         file_logger = logging.handlers.RotatingFileHandler(
-            config["logging"]["file"],
-            maxBytes=max_log_size,
-            backupCount=9)
+            config["logging"]["file"], maxBytes=max_log_size, backupCount=9
+        )
         file_logger.setFormatter(log_format)
         root_logger.addHandler(file_logger)
 
@@ -201,15 +202,25 @@ def setup_logger():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--conf",
-                        default="snapraid-runner.conf",
-                        metavar="CONFIG",
-                        help="Configuration file (default: %(default)s)")
-    parser.add_argument("--no-scrub", action='store_false',
-                        dest='scrub', default=None,
-                        help="Do not scrub (overrides config)")
-    parser.add_argument("--ignore-deletethreshold", action='store_true',
-                        help="Sync even if configured delete threshold is exceeded")
+    parser.add_argument(
+        "-c",
+        "--conf",
+        default="snapraid-runner.conf",
+        metavar="CONFIG",
+        help="Configuration file (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--no-scrub",
+        action="store_false",
+        dest="scrub",
+        default=None,
+        help="Do not scrub (overrides config)",
+    )
+    parser.add_argument(
+        "--ignore-deletethreshold",
+        action="store_true",
+        help="Sync even if configured delete threshold is exceeded",
+    )
     args = parser.parse_args()
 
     if not os.path.exists(args.conf):
@@ -244,13 +255,15 @@ def run():
     logging.info("=" * 60)
 
     if not os.path.isfile(config["snapraid"]["executable"]):
-        logging.error("The configured snapraid executable \"{}\" does not "
-                      "exist or is not a file".format(
-                          config["snapraid"]["executable"]))
+        logging.error(
+            'The configured snapraid executable "{}" does not '
+            "exist or is not a file".format(config["snapraid"]["executable"])
+        )
         finish(False)
     if not os.path.isfile(config["snapraid"]["config"]):
-        logging.error("Snapraid config does not exist at " +
-                      config["snapraid"]["config"])
+        logging.error(
+            "Snapraid config does not exist at " + config["snapraid"]["config"]
+        )
         finish(False)
 
     if config["snapraid"]["touch"]:
@@ -263,21 +276,35 @@ def run():
     logging.info("*" * 60)
 
     diff_results = Counter(line.split(" ")[0] for line in diff_out)
-    diff_results = dict((x, diff_results[x]) for x in
-                        ["add", "remove", "move", "update"])
-    logging.info(("Diff results: {add} added,  {remove} removed,  " +
-                  "{move} moved,  {update} modified").format(**diff_results))
+    diff_results = dict(
+        (x, diff_results[x]) for x in ["add", "remove", "move", "update"]
+    )
+    logging.info(
+        (
+            "Diff results: {add} added,  {remove} removed,  "
+            + "{move} moved,  {update} modified"
+        ).format(**diff_results)
+    )
 
-    if (config["snapraid"]["deletethreshold"] >= 0 and
-            diff_results["remove"] > config["snapraid"]["deletethreshold"]):
+    if (
+        config["snapraid"]["deletethreshold"] >= 0
+        and diff_results["remove"] > config["snapraid"]["deletethreshold"]
+    ):
         logging.error(
             "Deleted files exceed delete threshold of {}, aborting".format(
-                config["snapraid"]["deletethreshold"]))
+                config["snapraid"]["deletethreshold"]
+            )
+        )
         logging.error("Run again with --ignore-deletethreshold to sync anyways")
         finish(False)
 
-    if (diff_results["remove"] + diff_results["add"] + diff_results["move"] +
-            diff_results["update"] == 0):
+    if (
+        diff_results["remove"]
+        + diff_results["add"]
+        + diff_results["move"]
+        + diff_results["update"]
+        == 0
+    ):
         logging.info("No changes detected, no sync required")
     else:
         logging.info("Running sync...")
